@@ -58,9 +58,42 @@ async function updateUser(userData) {
   return updatedUser;
 }
 
+async function getAllSessions() {
+  await connectDatabase();
+  let sessions = await sessionsCollection.find({}).toArray();
+  return sessions;
+}
+
+async function getSession(SessionKey) {
+  await connectDatabase();
+  let session = await sessionsCollection.findOne({ SessionKey: SessionKey });
+
+  return session;
+}
+
+async function saveSession(uuid, expiry, data) {
+  await connectDatabase();
+
+  await sessionsCollection.insertOne({
+    SessionKey: uuid,
+    Expiry: expiry,
+    Data: data,
+  });
+}
+
+async function deleteSession(key) {
+  console.log(key);
+
+  await sessionsCollection.deleteOne({ SessionKey: key });
+}
+
 module.exports = {
   getAllusers,
   getUser,
   makeUser,
   updateUser,
+  getAllSessions,
+  getSession,
+  saveSession,
+  deleteSession,
 };

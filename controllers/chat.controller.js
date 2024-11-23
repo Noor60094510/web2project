@@ -89,3 +89,45 @@ const deleteChat = async (req, res) => {
     res.status(500).json({ message: "Error deleting message", error });
   }
 };
+
+const chatPage = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).send("Unauthorized: No token provided.");
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded || !decoded.userId) {
+      return res.status(401).send("Unauthorized: Invalid token.");
+    }
+    const user = await User.findById(decoded.userId).lean();
+
+    if (!user) {
+      return res.status(404).send("User not found.");
+    }
+
+    if (!user.profile) {
+      user.profile = null;
+    }
+    const loggedInUserId = req.user._id;
+    const loggedInUserBadges = user.badges;
+
+    const users = await User.find({ _id: { $ne: req.user._id } }).lean();
+    res.render("chat", {
+      loggedInUser: user,
+      users,
+      loggedInUserId,
+      loggedInUserBadges,
+    });
+  } catch (error) {
+    console.error("Error fetching users for chat page:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+module.exports = {
+  sendChat,
+  getChat,
+  deleteChat,
+  chatPage,
+};

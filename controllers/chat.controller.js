@@ -72,3 +72,20 @@ const getChat = async (req, res) => {
     res.status(500).json({ message: "Error retrieving messages", error });
   }
 };
+
+const deleteChat = async (req, res) => {
+  try {
+    const { messageId } = req.params;
+
+    const deletedMessage = await Chat.findByIdAndDelete(messageId);
+
+    if (!deletedMessage) {
+      return res.status(404).json({ message: "Message not found" });
+    }
+
+    res.status(200).json({ message: "Message deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting message", error });
+  }
+};

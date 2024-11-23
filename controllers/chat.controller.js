@@ -52,3 +52,23 @@ const sendChat = async (req, res) => {
     res.status(500).json({ message: "Error sending message", error });
   }
 };
+
+const getChat = async (req, res) => {
+  const { loggedInUserId, selectedUserId } = req.params;
+  try {
+    const messages = await Chat.find({
+      $or: [
+        { senderId: loggedInUserId, receiverId: selectedUserId },
+        { senderId: selectedUserId, receiverId: loggedInUserId },
+      ],
+    })
+      .populate("senderId", "name profile")
+      .populate("receiverId", "name profile")
+      .sort("createdAt");
+
+    res.json({ messages });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error retrieving messages", error });
+  }
+};

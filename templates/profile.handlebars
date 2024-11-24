@@ -1,0 +1,114 @@
+{{!< main}}
+<div class="bg-light min-vh-100 d-flex flex-row align-items-center">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="text-center">Welcome {{user.name}} to Your Profile</h4>
+          </div>
+          <div class="card-body">
+            {{#if user.profile}}
+              <div class="mb-3 text-center">
+                <img
+                  src="/images/{{user.profile}}"
+                  alt="{{user.name}}"
+                  class="rounded-circle"
+                  width="100"
+                  height="100"
+                />
+              </div>
+            {{/if}}
+
+            <form id="profileForm" enctype="multipart/form-data">
+              <!-- Add enctype -->
+              <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="name"
+                  id="name"
+                  value="{{user.name}}"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  name="email"
+                  id="email"
+                  value="{{user.email}}"
+                  required
+                />
+              </div>
+
+              <div class="d-flex gap-5">
+                <button type="submit" class="btn btn-success text-white">Update
+                  Profile</button>
+                <a href="/chat" class="btn btn-success text-white">Go To Chat</a>
+              <button class="btn btn-danger text-white px-4" type="button" onclick="handleLogout()">Logout</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Handle form submission
+  document.getElementById('profileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    // Get user inputs
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const userId = '{{userId}}'; // The user ID should be passed from the server
+    
+    const formData = new FormData();
+
+    // Append data to formData
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('userId', userId);
+
+    
+
+    try {
+      const response = await fetch(`http://localhost:8000/update/${userId}`, {
+        method: 'PUT',
+        body: formData,
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        alert('Profile updated successfully!');
+        
+      } else {
+        const errorText = await response.text();
+        alert(`Failed to update profile: ${errorText}`);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert('An error occurred while updating the profile');
+    }
+  });
+
+  function handleLogout() {
+    fetch('http://localhost:8000/logout', {
+        method: 'POST',
+        credentials: 'include'
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.replace('/');
+        }
+    })
+    .catch(error => {
+        alert('Error logging out');
+    });
+}
+</script>

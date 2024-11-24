@@ -15,10 +15,15 @@ const signup = async (req, res) => {
 
     const existingUser = await User.findOne({ $or: [{ email }, { name }] });
     if (existingUser) {
-      return res.status(400).json({ message: "Email or Username already exists" });
+      return res
+        .status(400)
+        .json({ message: "Email or Username already exists" });
     }
 
-    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+    const hashedPassword = crypto
+      .createHash("sha256")
+      .update(password)
+      .digest("hex");
 
     const userData = {
       name,
@@ -57,12 +62,15 @@ const login = async (req, res) => {
     }
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).send("Invalid email or password");
     }
 
-    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+    const hashedPassword = crypto
+      .createHash("sha256")
+      .update(password)
+      .digest("hex");
     if (hashedPassword !== user.password) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).send("Invalid email or password");
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
@@ -129,49 +137,55 @@ const logout = async (req, res) => {
   }
 };
 
-// get all user 
+// get all user
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
-    const usersProfile = users.map(user => ({
+    const usersProfile = users.map((user) => ({
       ...user._doc,
-      profile: user.profile ? `/images/${user.profile}` : '/images/default-avatar.png',
+      profile: user.profile
+        ? `/images/${user.profile}`
+        : "/images/default-avatar.png",
     }));
 
     res.status(200).json(usersProfile);
   } catch (error) {
-    console.error('Error fetching users:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching users:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-// block user 
+// block user
 const blockUser = async (req, res) => {
-    try {
-      const { userId } = req.params; // Logged-in user's ID
-      const { blockedUserId } = req.body;
-      console.log("userid", userId);
-      if (userId === blockedUserId) {
-        return res.status(400).json({ message: "You cannot block yourself." });
-      }
-      const user = await User.findById(userId);
-      console.log("user", user);
-      const blockedUser = await User.findById(blockedUserId);
-      if (!user || !blockedUser) {
-        return res.status(404).json({ message: "User not found." });
-      }
-  
-      if (user.blockedUsers.includes(blockedUserId)) {
-        return res.status(400).json({ message: "User is already blocked." });
-      }
-      // Add the blocked user
-      user.blockedUsers.push(blockedUserId);
-      await user.save();
-      res.status(200).json({ message: "User blocked successfully.", blockedUsers: user.blockedUsers });
-    } catch (error) {
-      console.error("Error blocking user:", error);
-      res.status(500).json({ message: "Error blocking user", error });
+  try {
+    const { userId } = req.params; // Logged-in user's ID
+    const { blockedUserId } = req.body;
+    console.log("userid", userId);
+    if (userId === blockedUserId) {
+      return res.status(400).json({ message: "You cannot block yourself." });
     }
-  };
-  module.exports = { signup, login, logout, updateUser, getAllUsers, blockUser };
-  
+    const user = await User.findById(userId);
+    console.log("user", user);
+    const blockedUser = await User.findById(blockedUserId);
+    if (!user || !blockedUser) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    if (user.blockedUsers.includes(blockedUserId)) {
+      return res.status(400).json({ message: "User is already blocked." });
+    }
+    // Add the blocked user
+    user.blockedUsers.push(blockedUserId);
+    await user.save();
+    res
+      .status(200)
+      .json({
+        message: "User blocked successfully.",
+        blockedUsers: user.blockedUsers,
+      });
+  } catch (error) {
+    console.error("Error blocking user:", error);
+    res.status(500).json({ message: "Error blocking user", error });
+  }
+};
+module.exports = { signup, login, logout, updateUser, getAllUsers, blockUser };

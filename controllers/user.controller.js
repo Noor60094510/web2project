@@ -177,12 +177,10 @@ const blockUser = async (req, res) => {
     // Add the blocked user
     user.blockedUsers.push(blockedUserId);
     await user.save();
-    res
-      .status(200)
-      .json({
-        message: "User blocked successfully.",
-        blockedUsers: user.blockedUsers,
-      });
+    res.status(200).json({
+      message: "User blocked successfully.",
+      blockedUsers: user.blockedUsers,
+    });
   } catch (error) {
     console.error("Error blocking user:", error);
     res.status(500).json({ message: "Error blocking user", error });

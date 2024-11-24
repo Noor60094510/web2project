@@ -145,3 +145,33 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+// block user 
+const blockUser = async (req, res) => {
+    try {
+      const { userId } = req.params; // Logged-in user's ID
+      const { blockedUserId } = req.body;
+      console.log("userid", userId);
+      if (userId === blockedUserId) {
+        return res.status(400).json({ message: "You cannot block yourself." });
+      }
+      const user = await User.findById(userId);
+      console.log("user", user);
+      const blockedUser = await User.findById(blockedUserId);
+      if (!user || !blockedUser) {
+        return res.status(404).json({ message: "User not found." });
+      }
+  
+      if (user.blockedUsers.includes(blockedUserId)) {
+        return res.status(400).json({ message: "User is already blocked." });
+      }
+      // Add the blocked user
+      user.blockedUsers.push(blockedUserId);
+      await user.save();
+      res.status(200).json({ message: "User blocked successfully.", blockedUsers: user.blockedUsers });
+    } catch (error) {
+      console.error("Error blocking user:", error);
+      res.status(500).json({ message: "Error blocking user", error });
+    }
+  };
+  module.exports = { signup, login, logout, updateUser, getAllUsers, blockUser };
+  

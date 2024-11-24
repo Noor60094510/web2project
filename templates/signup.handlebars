@@ -1,0 +1,147 @@
+{{!< main}}
+<div
+  class="min-vh-100 d-flex flex-column align-items-center justify-content-center bg-light"
+>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="card shadow border-0">
+          <div class="card-body p-5">
+            <h1 class="text-center text-success fw-bold">Register</h1>
+            <p class="text-center text-muted mb-4">Create your account to get
+              started</p>
+            <form
+              method="POST"
+              action="/register"
+              enctype="multipart/form-data"
+              id="registerForm"
+            >
+              <!-- Username -->
+              <div class="mb-3">
+                <label for="name" class="form-label text-muted">Username</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-success text-white">
+                    <i class="bi bi-person-fill"></i>
+                  </span>
+                  <input
+                    id="name"
+                    class="form-control"
+                    type="text"
+                    placeholder="Enter your username"
+                    name="name"
+                  />
+                </div>
+              </div>
+              <!-- Email -->
+              <div class="mb-3">
+                <label for="email" class="form-label text-muted">Email</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-success text-white">
+                    <i class="bi bi-envelope-fill"></i>
+                  </span>
+                  <input
+                    id="email"
+                    class="form-control"
+                    type="email"
+                    placeholder="Enter your email"
+                    name="email"
+                  />
+                </div>
+              </div>
+
+              <!-- Password -->
+              <div class="mb-3">
+                <label
+                  for="password"
+                  class="form-label text-muted"
+                >Password</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-success text-white">
+                    <i class="bi bi-lock-fill"></i>
+                  </span>
+                  <input
+                    id="password"
+                    class="form-control"
+                    type="password"
+                    placeholder="Enter your password"
+                    name="password"
+                  />
+                </div>
+              </div>
+
+              <!-- Confirm Password -->
+              <div class="mb-3">
+                <label
+                  for="confirmPassword"
+                  class="form-label text-muted"
+                >Confirm Password</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-success text-white">
+                    <i class="bi bi-lock-fill"></i>
+                  </span>
+                  <input
+                    id="confirmPassword"
+                    class="form-control"
+                    type="password"
+                    placeholder="Confirm your password"
+                    name="confirmPassword"
+                  />
+                </div>
+              </div>
+
+              <!-- Profile Picture -->
+              <div class="mb-3">
+                <label for="profile" class="form-label text-muted">Profile
+                  Picture (Optional)</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-success text-white">
+                    <i class="bi bi-image-fill"></i>
+                  </span>
+                  <input
+                    class="form-control"
+                    type="file"
+                    name="profile"
+                    id="profile"
+                  />
+                </div>
+              </div>
+
+              <!-- Register Button -->
+              <div class="d-grid gap-2">
+                <button
+                  class="btn btn-success text-white rounded-pill"
+                  type="submit"
+                >Register</button>
+                <button
+                  class="btn btn-outline-primary rounded-pill"
+                  type="button"
+                  onclick="window.location.href='/'"
+                >
+                  Already have an account? Login
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('registerForm').addEventListener('submit', async (e)
+  => { e.preventDefault(); const formData = new FormData();
+  formData.append('name', document.getElementById('name').value);
+  formData.append('email', document.getElementById('email').value);
+  formData.append('password', document.getElementById('password').value);
+  formData.append('confirmPassword',
+  document.getElementById('confirmPassword').value); const profile =
+  document.getElementById('profile').files[0]; if (profile) {
+  formData.append('profile', profile); } try { const response = await
+  fetch('http://localhost:8000/register', { method: 'POST', body: formData, });
+  const data = await response.json(); if (response.ok) { alert('Registration
+  successful! Redirecting to login page...'); window.location.href = '/'; } else
+  { alert(data.message || 'Registration failed. Please try again.'); } } catch
+  (error) { console.error('Error during registration:', error); alert('An
+  unexpected error occurred. Please try again later.'); } });
+</script>

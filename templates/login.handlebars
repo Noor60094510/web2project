@@ -1,209 +1,85 @@
-<!--
-* CoreUI - Free Bootstrap Admin Template
-* @version v4.2.2
-* @link https://coreui.io/product/free-bootstrap-admin-template/
-* Copyright (c) 2023 creativeLabs Łukasz Holeczek
-* Licensed under MIT (https://github.com/coreui/coreui-free-bootstrap-admin-template/blob/main/LICENSE)
--->
-<html lang="en">
+{{!< main}}
+<div
+  class="min-vh-100 d-flex align-items-center justify-content-center"
+  style="background: linear-gradient(135deg, #f0f4f8, #d9e8ff);"
+>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div
+          class="card p-4"
+          style="border-radius: 12px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);"
+        >
+          <div class="card-body">
+            <h1 class="text-center text-success mb-4">Welcome Back!</h1>
+            <p class="text-muted text-center">Sign in to access your account</p>
+            <form action="/login" method="POST">
 
-  <head>
-    <base href="./" />
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-    />
-    <meta
-      name="description"
-      content="CoreUI - Open Source Bootstrap Admin Template"
-    />
-    <meta name="author" content="Łukasz Holeczek" />
-    <meta
-      name="keyword"
-      content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard"
-    />
-    <title>CoreUI Free Bootstrap Admin Template</title>
-    <link
-      rel="apple-touch-icon"
-      sizes="57x57"
-      href="assets/favicon/apple-icon-57x57.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="60x60"
-      href="assets/favicon/apple-icon-60x60.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="assets/favicon/apple-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="76x76"
-      href="assets/favicon/apple-icon-76x76.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="assets/favicon/apple-icon-114x114.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="120x120"
-      href="assets/favicon/apple-icon-120x120.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="144x144"
-      href="assets/favicon/apple-icon-144x144.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="152x152"
-      href="assets/favicon/apple-icon-152x152.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="assets/favicon/apple-icon-180x180.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="192x192"
-      href="assets/favicon/android-icon-192x192.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="assets/favicon/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="96x96"
-      href="assets/favicon/favicon-96x96.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="assets/favicon/favicon-16x16.png"
-    />
-    <link rel="manifest" href="assets/favicon/manifest.json" />
-    <meta name="msapplication-TileColor" content="#ffffff" />
-    <meta
-      name="msapplication-TileImage"
-      content="assets/favicon/ms-icon-144x144.png"
-    />
-    <meta name="theme-color" content="#ffffff" />
-    <!-- Vendors styles-->
-
-    <link rel="stylesheet" href="css/vendors/simplebar.css" />
-
-    {{!
-  <link rel="stylesheet" href="vendors/simplebar/css/simplebar.css" /> }}
-
-    <link rel="stylesheet" href="css/vendors/simplebar.css" />
-    <!-- Main styles for this application-->
-    <link href="css/style.css" rel="stylesheet" />
-    <!-- We use those styles to show code examples, you should remove them in your application.-->
-    <link href="css/examples.css" rel="stylesheet" />
-  </head>
-
-  <body>
-    <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-lg-8">
-            <div class="card-group d-block d-md-flex row">
-              <div class="card col-md-7 p-4 mb-0">
-
-                <form method="post" action="/">
-                  <div class="card-body">
-                    <h1>Login</h1>
-                    <p class="text-medium-emphasis">Sign In to your account</p>
-                    <div class="input-group mb-3">
-                      <span class="input-group-text">
-                        <svg class="icon">
-                          <use
-                            xlink:href="vendors/@coreui/icons/svg/free.svg#cil-user"
-                          ></use>
-                        </svg></span>
-                      <input
-                        class="form-control"
-                        type="text"
-                        placeholder="Email"
-                        name="email"
-                        value="test@gmail.com"
-                      />
-                    </div>
-                    <div class="input-group mb-4">
-                      <span class="input-group-text">
-                        <svg class="icon">
-                          <use
-                            xlink:href="vendors/@coreui/icons/svg/free.svg#cil-lock-locked"
-                          ></use>
-                        </svg></span>
-                      <input
-                        class="form-control"
-                        type="password"
-                        placeholder="Password"
-                        name="password"
-                        value="test"
-                      />
-                    </div>
-                    <div class="row">
-                      <div class="col-6">
-                        <button class="btn btn-primary px-4" type="submit">
-                          Login
-                        </button>
-                      </div>
-                      <div class="col-6 text-end">
-                        <button class="btn btn-link px-0" type="button">
-                          Forgot password?
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-
+              <div class="input-group mb-3">
+                <span class="input-group-text bg-light text-success">
+                  <svg class="icon" style="width: 18px; height: 18px;">
+                    <use
+                      xlink:href="/static/vendors/@coreui/icons/svg/free.svg#cil-user"
+                    ></use>
+                  </svg>
+                </span>
+                <input
+                  id="email"
+                  class="form-control"
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  required
+                />
               </div>
-              <div class="card col-md-5 text-white bg-primary py-5">
-                <div class="card-body text-center">
-                  <div>
-                    <h2>Sign up</h2>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua.
-                    </p>
-                    <a href="/register">
-                      <button
-                        class="btn btn-lg btn-outline-light mt-3"
-                        type="button"
-                      >
-                        Register Now!
-                      </button>
-                    </a>
-                  </div>
-                </div>
+              <!-- Password Field -->
+              <div class="input-group mb-4">
+                <span class="input-group-text bg-light text-success">
+                  <svg class="icon" style="width: 18px; height: 18px;">
+                    <use
+                      xlink:href="/static/vendors/@coreui/icons/svg/free.svg#cil-lock-locked"
+                    ></use>
+                  </svg>
+                </span>
+                <input
+                  id="password"
+                  class="form-control"
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  required
+                />
               </div>
-            </div>
+              <!-- Buttons -->
+              <div class="d-grid gap-2">
+                <button
+                  class="btn btn-success text-white"
+                  type="submit"
+                  style="border-radius: 8px;"
+                >Login</button>
+                <button
+                  class="btn btn-outline-primary"
+                  type="button"
+                  onclick="window.location.href='/register'"
+                  style="border-radius: 8px;"
+                >Register</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
-    <!-- CoreUI and necessary plugins-->
-    <script src="vendors/@coreui/coreui/js/coreui.bundle.min.js"></script>
-    {{!
-  <script src="css/vendors/@coreui/coreui/js/coreui.bundle.min.js"></script> }}
-    <script src="vendors/simplebar/js/simplebar.min.js"></script>
-    <script></script>
-  </body>
-
-</html>
+  </div>
+</div>
+<script>
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault(); const formData = { email:
+  document.getElementById('email').value, password:
+  document.getElementById('password').value }; try { const response = await
+  fetch('http://localhost:8000/login', { method: 'POST', headers: {
+  'Content-Type': 'application/json' }, body: JSON.stringify(formData),
+  credentials: 'include' }); const data = await response.json(); if
+  (response.ok) { window.location.replace('/profile'); } else {
+  alert(data.message || 'Login failed'); } } catch (error) { alert('An error
+  occurred during login'); } });
+</script>

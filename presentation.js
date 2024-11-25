@@ -33,7 +33,7 @@ app.use("/", chatRoute);
 // Start server
 app.listen(8000, () => {
   try {
-    mongoose.connect("mongodb://localhost:27017/");
+    mongoose.connect("mongodb+srv://60094510:12345@cluster0.jd0q2ew.mongodb.net/");
     console.log("MongoDB Connected");
   } catch (error) {
     console.log(error);

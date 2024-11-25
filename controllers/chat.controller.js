@@ -23,12 +23,7 @@ const sendChat = async (req, res) => {
       return res.status(403).json({ message: "You are blocked by this user." });
     }
 
-    const newMessage = new Chat({
-      senderId,
-      receiverId,
-      message,
-      createdAt: new Date(),
-    });
+    const newMessage = new Chat({ senderId, receiverId, message, createdAt: new Date() });
     await newMessage.save();
 
     sender.messagesSent = (sender.messagesSent || 0) + 1;
@@ -60,13 +55,13 @@ const getChat = async (req, res) => {
       $or: [
         { senderId: loggedInUserId, receiverId: selectedUserId },
         { senderId: selectedUserId, receiverId: loggedInUserId },
-      ],
-    })
-      .populate("senderId", "name profile")
-      .populate("receiverId", "name profile")
-      .sort("createdAt");
+      ]
+    }).populate('senderId', 'name profile')
+      .populate('receiverId', 'name profile')
+      .sort('createdAt');
 
     res.json({ messages });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error retrieving messages", error });
@@ -93,35 +88,36 @@ const chatPage = async (req, res) => {
   try {
     const token = req.cookies.token;
     if (!token) {
-      return res.status(401).send("Unauthorized: No token provided.");
+      return res.status(401).send('Unauthorized: No token provided.');
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (!decoded || !decoded.userId) {
-      return res.status(401).send("Unauthorized: Invalid token.");
+      return res.status(401).send('Unauthorized: Invalid token.');
     }
     const user = await User.findById(decoded.userId).lean();
 
     if (!user) {
-      return res.status(404).send("User not found.");
+      return res.status(404).send('User not found.');
     }
 
     if (!user.profile) {
-      user.profile = null;
+      user.profile = null
     }
     const loggedInUserId = req.user._id;
     const loggedInUserBadges = user.badges;
 
     const users = await User.find({ _id: { $ne: req.user._id } }).lean();
-    res.render("chat", {
+    res.render('chat', {
       loggedInUser: user,
       users,
       loggedInUserId,
-      loggedInUserBadges,
+      loggedInUserBadges
     });
+
   } catch (error) {
-    console.error("Error fetching users for chat page:", error);
-    res.status(500).send("Internal Server Error");
+    console.error('Error fetching users for chat page:', error);
+    res.status(500).send('Internal Server Error');
   }
 };
 module.exports = {

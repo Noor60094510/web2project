@@ -9,51 +9,34 @@
         <div class="p-3 border-bottom border-secondary">
           <h5 class="mb-0 fw-bold text-white">CHAT'S</h5>
         </div>
-
+        
         <!-- Users List -->
         <div class="users-list flex-grow-1 overflow-auto">
-          {{#each users}}
-            <div
-              class="user-item d-flex align-items-center justify-content-between p-3 border-bottom border-secondary hover-bg-dark cursor-pointer"
-              data-user-id="{{this._id}}"
-            >
-              <div class="d-flex align-items-center">
-                {{#if this.profile}}
-                  <img
-                    src="/images/{{this.profile}}"
-                    alt="{{this.name}}"
-                    class="rounded-circle me-3"
-                    width="48"
-                    height="48"
-                  />
-                {{else}}
-                  <img
-                    src="/images/default-profile.png"
-                    alt="Default Profile"
-                    class="rounded-circle me-3"
-                    width="48"
-                    height="48"
-                  />
-                {{/if}}
-                <div class="user-info">
-                  <h6 class="mb-0 text-white">{{#if
-                      this.name
-                    }}{{this.name}}{{else}}Not Available{{/if}}</h6>
-                  <small class="text-light-gray">available</small>
-                </div>
-              </div>
-              <!-- Block Button -->
-              <button href="#" class="btn btn-danger">
-                Block
-              </button>
-            </div>
-          {{else}}
-            <div class="p-4 text-center text-light-gray">
-              <i class="bi bi-people-fill fs-1"></i>
-              <p class="mt-2">No users available</p>
-            </div>
-          {{/each}}
+  {{#each users}}
+    <div class="user-item d-flex align-items-center justify-content-between p-3 border-bottom border-secondary hover-bg-dark cursor-pointer" data-user-id="{{this._id}}">
+      <div class="d-flex align-items-center">
+        {{#if this.profile}}
+          <img src="/images/{{this.profile}}" alt="{{this.name}}" class="rounded-circle me-3" width="48" height="48">
+        {{else}}
+          <img src="/images/default-profile.png" alt="Default Profile" class="rounded-circle me-3" width="48" height="48">
+        {{/if}}
+        <div class="user-info">
+          <h6 class="mb-0 text-white">{{#if this.name}}{{this.name}}{{else}}Not Available{{/if}}</h6>
+          <small class="text-light-gray">available</small>
         </div>
+      </div>
+      <!-- Block Button -->
+      <button href="#" class="btn  btn-danger">
+        Block
+      </button>
+    </div>
+  {{else}}
+    <div class="p-4 text-center text-light-gray">
+      <i class="bi bi-people-fill fs-1"></i>
+      <p class="mt-2">No users available</p>
+    </div>
+  {{/each}}
+</div>
 
       </div>
     </div>
@@ -65,57 +48,36 @@
         <div class="p-3 border-bottom bg-white">
           <div class="d-flex align-items-center">
             {{#if loggedInUser.profile}}
-              <img
-                src="/images/{{loggedInUser.profile}}"
-                alt="{{loggedInUser.name}}"
-                class="rounded-circle me-3"
-                width="48"
-                height="48"
-              />
+              <img src="/images/{{loggedInUser.profile}}" alt="{{loggedInUser.name}}" class="rounded-circle me-3" width="48" height="48">
             {{else}}
-              <img
-                src="/images/default-profile.png"
-                alt="Default Profile"
-                class="rounded-circle me-3"
-                width="48"
-                height="48"
-              />
+              <img src="/images/default-profile.png" alt="Default Profile" class="rounded-circle me-3" width="48" height="48">
             {{/if}}
-
-            <div
-              class="d-flex justify-content-between align-items-center w-100"
-            >
+           
+            <div class="d-flex justify-content-between align-items-center w-100">
               <div>
-                <h6 class="mb-0 fw-bold"> {{loggedInUser.name}}</h6>
-                <p class="mt-2">Sent Messages {{loggedInUser.messagesSent}}</p>
+              <h6 class="mb-0 fw-bold"> {{loggedInUser.name}}</h6>
+               <p class="mt-2">Sent Messages {{loggedInUser.messagesSent}}</p>
               </div>
-              <div class="d-flex flex-column align-items-end">
+              <div class="d-flex flex-column align-items-end ">
                 <label style="margin-right: 10px;" for="">badges</label>
-                {{#if loggedInUser.badges}}
-                  <span class="badge bg-primary">{{loggedInUser.badges}}</span>
-                {{else}}
-                  <p style="margin-right: 10px;">Not eligible for badge</p>
-                {{/if}}
+              {{#if loggedInUser.badges}}
+                <span class="badge bg-primary">{{loggedInUser.badges}}</span>
+                {{ else }} <p style="margin-right: 10px;">Not eligible for badge</p>
+              {{/if}}
               </div>
             </div>
           </div>
         </div>
 
-        <div
-          class="messages-container flex-grow-1 overflow-auto p-3"
-          id="messagesContainer"
-        >
-
+    
+        <div class="messages-container flex-grow-1 overflow-auto p-3" id="messagesContainer">
+     
         </div>
 
+        
         <div class="p-3 border-top bg-white message-input-container">
           <div class="input-group" style="margin-bottom: 30px;">
-            <input
-              type="text"
-              class="form-control rounded-start"
-              placeholder="Type your message..."
-              id="messageInput"
-            />
+            <input type="text" class="form-control rounded-start" placeholder="Type your message..." id="messageInput">
             <button class="btn btn-primary px-4" id="sendMessageBtn">
               <i class="bi bi-send-fill">Send</i>
             </button>
@@ -127,110 +89,350 @@
 </div>
 
 <style>
-  html, body { height: 100%; overflow: hidden; } .container-fluid { height:
-  calc(100vh - 40px); margin: 20px; border-radius: 15px; box-shadow: 0 0 20px
-  rgba(0,0,0,0.1); background: white; overflow: hidden; } .hover-bg-dark:hover {
-  background-color: rgba(255, 255, 255, 0.1); transition: background-color 0.2s
-  ease; } .text-light-gray { color: #adb5bd; } .cursor-pointer { cursor:
-  pointer; } .users-list { height: calc(100vh - 150px); } .messages-container {
-  height: calc(100vh - 200px); background-color: #f8f9fa; } .message {
-  max-width: 75%; margin-bottom: 1rem; } .message.sender { margin-left: auto;
-  margin-right: 20px; } .message-content { padding: 0.75rem 1rem; border-radius:
-  15px; position: relative; word-wrap: break-word; } .message.sender
-  .message-content { background-color: #0d6efd; color: white;
-  border-bottom-right-radius: 5px; } .message.receiver .message-content {
-  background-color: white; border-bottom-left-radius: 5px; box-shadow: 0 2px 5px
-  rgba(0,0,0,0.1); margin-left: 20px; /* Added margin from left side */ }
-  .message-time { font-size: 0.75rem; color: #6c757d; margin-top: 0.25rem;
-  padding: 0 20px; /* Added padding for time stamps */ } .user-item.active {
-  background-color: rgba(255, 255, 255, 0.1); border-left: 4px solid #0d6efd; }
-  .form-control:focus { box-shadow: none; border-color: #0d6efd; } /* Message
-  input container adjustments */ .message-input-container { position: relative;
-  bottom: 0; background: white; padding: 1rem 1.5rem !important; margin-top:
-  auto; } .input-group { max-width: 98%; margin: 0 auto; } /* Custom scrollbar
-  for dark theme */ .users-list::-webkit-scrollbar { width: 6px; }
-  .users-list::-webkit-scrollbar-track { background: #343a40; }
-  .users-list::-webkit-scrollbar-thumb { background: #6c757d; border-radius:
-  3px; } .users-list::-webkit-scrollbar-thumb:hover { background: #adb5bd; } /*
-  Custom scrollbar for messages */ .messages-container::-webkit-scrollbar {
-  width: 6px; } .messages-container::-webkit-scrollbar-track { background:
-  #f1f1f1; } .messages-container::-webkit-scrollbar-thumb { background: #888;
-  border-radius: 3px; } .messages-container::-webkit-scrollbar-thumb:hover {
-  background: #555; } /* Active user styling in dark theme */ .user-item.active
-  { background-color: rgba(255, 255, 255, 0.1); border-left: 4px solid #0d6efd;
-  }
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.container-fluid {
+  height: calc(100vh - 40px);
+  margin: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  background: white;
+  overflow: hidden;
+}
+
+.hover-bg-dark:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.text-light-gray {
+  color: #adb5bd;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.users-list {
+  height: calc(100vh - 150px);
+}
+
+.messages-container {
+  height: calc(100vh - 200px);
+  background-color: #f8f9fa;
+}
+
+.message {
+  max-width: 75%;
+  margin-bottom: 1rem;
+}
+
+.message.sender {
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+.message-content {
+  padding: 0.75rem 1rem;
+  border-radius: 15px;
+  position: relative;
+  word-wrap: break-word;
+}
+
+.message.sender .message-content {
+  background-color: #0d6efd;
+  color: white;
+  border-bottom-right-radius: 5px;
+}
+
+.message.receiver .message-content {
+  background-color: white;
+  border-bottom-left-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-left: 20px; /* Added margin from left side */
+}
+
+.message-time {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+  padding: 0 20px; /* Added padding for time stamps */
+}
+
+.user-item.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #0d6efd;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #0d6efd;
+}
+
+/* Message input container adjustments */
+.message-input-container {
+  position: relative;
+  bottom: 0;
+  background: white;
+  padding: 1rem 1.5rem !important;
+  margin-top: auto;
+}
+
+.input-group {
+  max-width: 98%;
+  margin: 0 auto;
+}
+
+/* Custom scrollbar for dark theme */
+.users-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.users-list::-webkit-scrollbar-track {
+  background: #343a40;
+}
+
+.users-list::-webkit-scrollbar-thumb {
+  background: #6c757d;
+  border-radius: 3px;
+}
+
+.users-list::-webkit-scrollbar-thumb:hover {
+  background: #adb5bd;
+}
+
+/* Custom scrollbar for messages */
+.messages-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Active user styling in dark theme */
+.user-item.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #0d6efd;
+}
 </style>
 
 <script>
-  const loggedInUser = { profile: "{{loggedInUser.profile}}", name: "{{loggedInUser.name}}"
-  }; const loggedInUserId = "{{loggedInUser._id}}";
-  document.addEventListener("DOMContentLoaded", function() { const userItems =
-  document.querySelectorAll('.user-item'); const messagesContainer =
-  document.getElementById('messagesContainer'); const messageInput =
-  document.getElementById('messageInput'); const sendMessageBtn =
-  document.getElementById('sendMessageBtn'); const blockButtons =
-  document.querySelectorAll('.btn-danger'); let selectedUserId = null; // User
-  selection and message loading userItems.forEach(userItem => {
-  userItem.addEventListener('click', function() {
-  document.querySelectorAll('.user-item').forEach(item =>
-  item.classList.remove('active')); this.classList.add('active'); selectedUserId
-  = this.getAttribute('data-user-id'); // Fetch messages for selected user
-  fetch(`/messages/${loggedInUserId}/${selectedUserId}`) .then(response =>
-  response.json()) .then(data => { messagesContainer.innerHTML = '';
-  data.messages.forEach(message => { const isLoggedInUserMessage =
-  message.senderId._id === loggedInUserId; const messageElement =
-  document.createElement('div'); messageElement.classList.add('message',
-  isLoggedInUserMessage ? 'sender' : 'receiver'); const messageTime = new
-  Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute:
-  '2-digit' }); messageElement.innerHTML = ` <div class="d-flex
-  ${isLoggedInUserMessage ? 'justify-content-end' : 'justify-content-start'}">
-  <div class="message-wrapper"> <div class="message-content"> <div
-  class="message-text">${message.message}</div> </div> <div class="message-time
-  ${isLoggedInUserMessage ? 'text-end' : 'text-start'}"> ${isLoggedInUserMessage
-  ? 'You' : message.senderId.name} • ${messageTime} </div> </div> </div> `;
-  messagesContainer.appendChild(messageElement); }); messagesContainer.scrollTop
-  = messagesContainer.scrollHeight; }) .catch(error => { console.error('Error
-  fetching messages:', error); }); }); }); // Send message functionality async
-  function sendMessage() { if (selectedUserId && messageInput.value.trim()) {
-  try { const messageContent = messageInput.value.trim(); const response = await
-  fetch(`/send/${loggedInUserId}`, { method: 'POST', headers: { 'Content-Type':
-  'application/json' }, body: JSON.stringify({ receiverId: selectedUserId,
-  message: messageContent }) }); const data = await response.json(); if
-  (data.newMessage) { const messageElement = document.createElement('div');
-  messageElement.classList.add('message', 'sender'); messageElement.innerHTML =
-  ` <div class="d-flex justify-content-end"> <div class="message-wrapper"> <div
-  class="message-content"> <div class="message-text">${messageContent}</div>
-  </div> <div class="message-time text-end"> You • Just now </div> </div> </div>
-  `; messagesContainer.appendChild(messageElement); messageInput.value = '';
-  messagesContainer.scrollTop = messagesContainer.scrollHeight; } } catch
-  (error) { console.error('Error sending message:', error); alert('Failed to
-  send message. Please try again.'); } } else { if (!selectedUserId) {
-  alert('Please select a user to send message'); } } } // Message send event
-  listeners sendMessageBtn.addEventListener('click', sendMessage);
-  messageInput.addEventListener('keypress', function(e) { if (e.key === 'Enter')
-  { sendMessage(); } }); // Block user functionality blockButtons.forEach(button
-  => { button.addEventListener('click', async function(e) { e.stopPropagation();
-  // Prevent triggering the user selection // Get the user item and user ID
-  const userItem = this.closest('.user-item'); const blockedUserId =
-  userItem.getAttribute('data-user-id'); // Confirm before blocking if
-  (confirm('Are you sure you want to block this user?')) { // Disable the button
-  while processing this.disabled = true; try { const response = await
-  fetch(`/user/${loggedInUserId}`, { method: 'POST', headers: { 'Content-Type':
-  'application/json' }, body: JSON.stringify({ blockedUserId }) }); const data =
-  await response.json(); if (response.ok) { // Show success message
-  alert(data.message || 'User blocked successfully'); // Animate and remove the
-  user item userItem.style.transition = 'opacity 0.3s ease';
-  userItem.style.opacity = '0'; setTimeout(() => { userItem.remove(); }, 300);
-  // Clear messages if the blocked user was selected if (selectedUserId ===
-  blockedUserId) { messagesContainer.innerHTML = ''; selectedUserId = null; } }
-  else { // Show error message alert(data.message || 'Failed to block the
-  user'); this.disabled = false; } } catch (error) { console.error('Error
-  blocking user:', error); alert('Error blocking user. Please try again.');
-  this.disabled = false; } } }); }); // Add styles for blocking functionality
-  const additionalStyles = ` .user-item.blocked { opacity: 0.5; pointer-events:
-  none; } .btn-danger { padding: 5px 15px; font-size: 0.875rem; transition: all
-  0.2s ease; } .btn-danger:disabled { opacity: 0.6; cursor: not-allowed; }
-  .user-item { transition: opacity 0.3s ease; } `; const styleSheet =
-  document.createElement("style"); styleSheet.textContent = additionalStyles;
-  document.head.appendChild(styleSheet); });
+  const loggedInUser = {
+    profile: "{{loggedInUser.profile}}", 
+    name: "{{loggedInUser.name}}"
+};
+const loggedInUserId = "{{loggedInUser._id}}";
+
+document.addEventListener("DOMContentLoaded", function() {
+    const userItems = document.querySelectorAll('.user-item');
+    const messagesContainer = document.getElementById('messagesContainer');
+    const messageInput = document.getElementById('messageInput');
+    const sendMessageBtn = document.getElementById('sendMessageBtn');
+    const blockButtons = document.querySelectorAll('.btn-danger');
+
+    let selectedUserId = null;
+
+    // User selection and message loading
+    userItems.forEach(userItem => {
+        userItem.addEventListener('click', function() {
+            document.querySelectorAll('.user-item').forEach(item => 
+                item.classList.remove('active'));
+            this.classList.add('active');
+
+            selectedUserId = this.getAttribute('data-user-id');
+
+            // Fetch messages for selected user
+            fetch(`/messages/${loggedInUserId}/${selectedUserId}`)
+                .then(response => response.json())
+                .then(data => {
+                    messagesContainer.innerHTML = '';
+
+                    data.messages.forEach(message => {
+                        const isLoggedInUserMessage = message.senderId._id === loggedInUserId;
+                        const messageElement = document.createElement('div');
+                        messageElement.classList.add('message', isLoggedInUserMessage ? 'sender' : 'receiver');
+                        
+                        const messageTime = new Date(message.createdAt).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+
+                        messageElement.innerHTML = `
+                            <div class="d-flex ${isLoggedInUserMessage ? 'justify-content-end' : 'justify-content-start'}">
+                                <div class="message-wrapper">
+                                    <div class="message-content">
+                                        <div class="message-text">${message.message}</div>
+                                    </div>
+                                    <div class="message-time ${isLoggedInUserMessage ? 'text-end' : 'text-start'}">
+                                        ${isLoggedInUserMessage ? 'You' : message.senderId.name} • ${messageTime}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                        messagesContainer.appendChild(messageElement);
+                    });
+
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                })
+                .catch(error => {
+                    console.error('Error fetching messages:', error);
+                });
+        });
+    });
+
+    // Send message functionality
+    async function sendMessage() {
+        if (selectedUserId && messageInput.value.trim()) {
+            try {
+                const messageContent = messageInput.value.trim();
+
+                const response = await fetch(`/send/${loggedInUserId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        receiverId: selectedUserId,
+                        message: messageContent
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.newMessage) {
+                    const messageElement = document.createElement('div');
+                    messageElement.classList.add('message', 'sender');
+                    
+                    messageElement.innerHTML = `
+                        <div class="d-flex justify-content-end">
+                            <div class="message-wrapper">
+                                <div class="message-content">
+                                    <div class="message-text">${messageContent}</div>
+                                </div>
+                                <div class="message-time text-end">
+                                    You • Just now
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    messagesContainer.appendChild(messageElement);
+                    messageInput.value = '';
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Failed to send message. Please try again.');
+            }
+        } else {
+            if (!selectedUserId) {
+                alert('Please select a user to send message');
+            }
+        }
+    }
+
+    // Message send event listeners
+    sendMessageBtn.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Block user functionality
+    blockButtons.forEach(button => {
+        button.addEventListener('click', async function(e) {
+            e.stopPropagation(); // Prevent triggering the user selection
+            
+            // Get the user item and user ID
+            const userItem = this.closest('.user-item');
+            const blockedUserId = userItem.getAttribute('data-user-id');
+            
+            // Confirm before blocking
+            if (confirm('Are you sure you want to block this user?')) {
+                // Disable the button while processing
+                this.disabled = true;
+                
+                try {
+                    const response = await fetch(`/user/${loggedInUserId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ blockedUserId })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Show success message
+                        alert(data.message || 'User blocked successfully');
+                        
+                        // Animate and remove the user item
+                        userItem.style.transition = 'opacity 0.3s ease';
+                        userItem.style.opacity = '0';
+                        setTimeout(() => {
+                            userItem.remove();
+                        }, 300);
+
+                        // Clear messages if the blocked user was selected
+                        if (selectedUserId === blockedUserId) {
+                            messagesContainer.innerHTML = '';
+                            selectedUserId = null;
+                        }
+                    } else {
+                        // Show error message
+                        alert(data.message || 'Failed to block the user');
+                        this.disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Error blocking user:', error);
+                    alert('Error blocking user. Please try again.');
+                    this.disabled = false;
+                }
+            }
+        });
+    });
+
+    // Add styles for blocking functionality
+    const additionalStyles = `
+        .user-item.blocked {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .btn-danger {
+            padding: 5px 15px;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-danger:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .user-item {
+            transition: opacity 0.3s ease;
+        }
+    `;
+
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = additionalStyles;
+    document.head.appendChild(styleSheet);
+});
 </script>

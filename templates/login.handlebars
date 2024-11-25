@@ -1,68 +1,35 @@
 {{!< main}}
-<div
-  class="min-vh-100 d-flex align-items-center justify-content-center"
-  style="background: linear-gradient(135deg, #f0f4f8, #d9e8ff);"
->
+<div class="min-vh-100 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #f0f4f8, #d9e8ff);">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-6">
-        <div
-          class="card p-4"
-          style="border-radius: 12px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);"
-        >
+        <div class="card p-4" style="border-radius: 12px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);">
           <div class="card-body">
             <h1 class="text-center text-success mb-4">Welcome Back!</h1>
             <p class="text-muted text-center">Sign in to access your account</p>
-            <form action="/login" method="POST">
-
+            <form  action="/login" method="POST">
+          
               <div class="input-group mb-3">
                 <span class="input-group-text bg-light text-success">
                   <svg class="icon" style="width: 18px; height: 18px;">
-                    <use
-                      xlink:href="/static/vendors/@coreui/icons/svg/free.svg#cil-user"
-                    ></use>
+                    <use xlink:href="/static/vendors/@coreui/icons/svg/free.svg#cil-user"></use>
                   </svg>
                 </span>
-                <input
-                  id="email"
-                  class="form-control"
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  required
-                />
+                <input id="email" class="form-control" type="email" name="email" placeholder="Email" required>
               </div>
               <!-- Password Field -->
               <div class="input-group mb-4">
                 <span class="input-group-text bg-light text-success">
                   <svg class="icon" style="width: 18px; height: 18px;">
-                    <use
-                      xlink:href="/static/vendors/@coreui/icons/svg/free.svg#cil-lock-locked"
-                    ></use>
+                    <use xlink:href="/static/vendors/@coreui/icons/svg/free.svg#cil-lock-locked"></use>
                   </svg>
                 </span>
-                <input
-                  id="password"
-                  class="form-control"
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  required
-                />
+                <input id="password" class="form-control" type="password" name="password" placeholder="Password" required>
               </div>
               <!-- Buttons -->
               <div class="d-grid gap-2">
-                <button
-                  class="btn btn-success text-white"
-                  type="submit"
-                  style="border-radius: 8px;"
-                >Login</button>
-                <button
-                  class="btn btn-outline-primary"
-                  type="button"
-                  onclick="window.location.href='/register'"
-                  style="border-radius: 8px;"
-                >Register</button>
+                <button class="btn btn-success text-white" type="submit" style="border-radius: 8px;">Login</button>
+                <button class="btn btn-outline-primary" type="button" onclick="window.location.href='/register'" style="border-radius: 8px;">Register</button>
               </div>
             </form>
           </div>
@@ -71,15 +38,34 @@
     </div>
   </div>
 </div>
+
 <script>
-  document.getElementById('loginForm').addEventListener('submit', async (e) => {
-  e.preventDefault(); const formData = { email:
-  document.getElementById('email').value, password:
-  document.getElementById('password').value }; try { const response = await
-  fetch('http://localhost:8000/login', { method: 'POST', headers: {
-  'Content-Type': 'application/json' }, body: JSON.stringify(formData),
-  credentials: 'include' }); const data = await response.json(); if
-  (response.ok) { window.location.replace('/profile'); } else {
-  alert(data.message || 'Login failed'); } } catch (error) { alert('An error
-  occurred during login'); } });
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = {
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+    };
+    try {
+        const response = await fetch('http://localhost:8000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData),
+            credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            window.location.replace('/profile');
+        } else {
+            alert(data.message || 'Login failed');
+        }
+    } catch (error) {
+        alert('An error occurred during login');
+    }
+});
 </script>

@@ -8,7 +8,6 @@
             <h1 class="text-center text-success mb-4">Welcome Back!</h1>
             <p class="text-muted text-center">Sign in to access your account</p>
             <form  action="/login" method="POST">
-          
               <div class="input-group mb-3">
                 <span class="input-group-text bg-light text-success">
                   <svg class="icon" style="width: 18px; height: 18px;">
@@ -29,6 +28,7 @@
               <!-- Buttons -->
               <div class="d-grid gap-2">
                 <button class="btn btn-success text-white" type="submit" style="border-radius: 8px;">Login</button>
+                <button class="btn btn-warning text-white" style="border-radius: 8px;" onclick="window.location.href='/reset-password'; return false;">Forgot Password</button>
                 <button class="btn btn-outline-primary" type="button" onclick="window.location.href='/register'" style="border-radius: 8px;">Register</button>
               </div>
             </form>
@@ -38,6 +38,7 @@
     </div>
   </div>
 </div>
+
 
 <script>
 document.getElementById('loginForm').addEventListener('submit', async (e) => {

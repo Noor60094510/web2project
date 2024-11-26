@@ -9,10 +9,9 @@
         <div class="p-3 border-bottom border-secondary">
           <h5 class="mb-0 fw-bold text-white">CHAT'S</h5>
         </div>
-        
         <!-- Users List -->
         <div class="users-list flex-grow-1 overflow-auto">
-  {{#each users}}
+  {{#each contacts}}
     <div class="user-item d-flex align-items-center justify-content-between p-3 border-bottom border-secondary hover-bg-dark cursor-pointer" data-user-id="{{this._id}}">
       <div class="d-flex align-items-center">
         {{#if this.profile}}
@@ -24,6 +23,9 @@
           <h6 class="mb-0 text-white">{{#if this.name}}{{this.name}}{{else}}Not Available{{/if}}</h6>
           <small class="text-light-gray">available</small>
         </div>
+        <button href="#" class="btn btn-warning btn-sm btn-remove ms-5" data-user-id="{{this._id}}">
+    Remove
+  </button>
       </div>
       <!-- Block Button -->
       <button href="#" class="btn  btn-danger">
@@ -435,4 +437,49 @@ document.addEventListener("DOMContentLoaded", function() {
     styleSheet.textContent = additionalStyles;
     document.head.appendChild(styleSheet);
 });
+
+// remove contact 
+ const removeButtons = document.querySelectorAll('.btn-remove'); // Select remove buttons
+removeButtons.forEach(button => {
+    button.addEventListener('click', async function(e) {
+        e.stopPropagation(); // Prevent triggering the user selection
+
+        const contactId = this.getAttribute('data-user-id'); // Get the contact's user ID
+        
+        // Confirm before removing
+        if (confirm('Are you sure you want to remove this contact?')) {
+            try {
+                const response = await fetch(`http://localhost:8000/remove-contact/${loggedInUserId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ contactId }) // Send contactId instead of userId
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Show success message
+                    alert(data.message || 'Contact removed successfully');
+
+                    // Animate and remove the contact from the UI
+                    const userItem = this.closest('.user-item');
+                    userItem.style.transition = 'opacity 0.3s ease';
+                    userItem.style.opacity = '0';
+                    setTimeout(() => {
+                        userItem.remove();
+                    }, 300);
+                } else{
+                    // Show error message
+                    alert(data.message || 'Failed to remove contact');
+                }
+            } catch (error) {
+              console.error('Error removing contact:', error);
+              alert('Contact Removed.');
+            }
+        }
+    });
+});
+
 </script>

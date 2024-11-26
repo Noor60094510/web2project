@@ -1,21 +1,10 @@
-const mongoose = require("mongoose");
+const express = require("express");
+const router = express.Router();
+const { login, logout } = require("../controllers/user.controller");
 
-const userSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    messagesSent:{ type: Number, default: 0 },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    profile: { type: String }, 
-    blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    badges: [{ type: String }],
-  },
- 
-  { timestamps: true }
-);
-
-module.exports = mongoose.model('User', userSchema);
+router.get("/", (req, res) => {
+  res.render("login");
+});
+router.post('/login', login);
+router.post('/logout',logout)
+module.exports = router;

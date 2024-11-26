@@ -21,7 +21,6 @@
             {{/if}}
 
             <form id="profileForm" enctype="multipart/form-data">
-              <!-- Add enctype -->
               <div class="mb-3">
                 <label class="form-label">Username</label>
                 <input
@@ -45,11 +44,85 @@
                 />
               </div>
 
+              <!-- Languages Section -->
+              <div class="mb-4">
+                <h5>Language Management</h5>
+                <div class="row">
+                  <!-- Learning Languages -->
+                  <div class="col-md-6">
+                    <div class="card bg-light">
+                      <div class="card-header">
+                        <h6 class="mb-0">Currently Learning</h6>
+                      </div>
+                      <div class="card-body">
+                        <select class="form-select" id="learningLanguages">
+                          <option value="">Select language to mark as fluent</option>
+                          {{#each user.languagesLearning}}
+                            <option value="{{this}}">{{this}}</option>
+                          {{/each}}
+                        </select>
+                        <button 
+                          type="button" 
+                          class="btn btn-primary mt-2"
+                          onclick="moveToFluent()"
+                        >
+                          Mark as Fluent
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Fluent Languages -->
+                  <div class="col-md-6">
+                    <div class="card bg-light">
+                      <div class="card-header">
+                        <h6 class="mb-0">Fluent In</h6>
+                      </div>
+                      <div class="card-body">
+                        <ul class="list-group">
+                          {{#each user.languagesFluentIn}}
+                            <li class="list-group-item">{{this}}</li>
+                          {{/each}}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+<!-- Add to Contact Functionality -->
+<div class="mb-4">
+  <h5>Manage Contacts</h5>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card bg-light">
+        <div class="card-header">
+          <h6 class="mb-0">Add Contacts</h6>
+        </div>
+        <div class="card-body">
+          <!-- Dropdown for All Users -->
+          <select class="form-select mb-2" id="usersDropdown">
+            <option value="">Select a user to add as a contact</option>
+          </select>
+              <button type="button" class="btn btn-primary" onclick="addToContact()">Add to Contact</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- List of Added Contacts -->
+<div class="mb-4">
+  <h5>Added Contacts</h5>
+  <ul class="list-group" id="contactsList">
+    <!-- Dynamically populated -->
+  </ul>
+</div>
+            
               <div class="d-flex gap-5">
-                <button type="submit" class="btn btn-success text-white">Update
-                  Profile</button>
+                <button type="submit" class="btn btn-success text-white">Update Profile</button>
                 <a href="/chat" class="btn btn-success text-white">Go To Chat</a>
-              <button class="btn btn-danger text-white px-4" type="button" onclick="handleLogout()">Logout</button>
+                <button class="btn btn-danger text-white px-4" type="button" onclick="handleLogout()">Logout</button>
               </div>
             </form>
           </div>
@@ -63,19 +136,14 @@
   // Handle form submission
   document.getElementById('profileForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    // Get user inputs
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
-    const userId = '{{userId}}'; // The user ID should be passed from the server
+    const userId = '{{userId}}';
     
     const formData = new FormData();
-
-    // Append data to formData
     formData.append('name', name);
     formData.append('email', email);
     formData.append('userId', userId);
-
-    
 
     try {
       const response = await fetch(`http://localhost:8000/update/${userId}`, {
@@ -86,16 +154,51 @@
 
       if (response.ok) {
         alert('Profile updated successfully!');
-        
+        location.reload(); // Reload to show updated data
       } else {
-        const errorText = await response.text();
-        alert(`Failed to update profile: ${errorText}`);
+        const errorData = await response.json();
+        alert(errorData.message || 'Failed to update profile');
       }
     } catch (error) {
       console.error("Error updating profile:", error);
       alert('An error occurred while updating the profile');
     }
   });
+
+  // Handle moving language from learning to fluent
+  async function moveToFluent() {
+    const select = document.getElementById('learningLanguages');
+    const selectedLanguage = select.value;
+    
+    if (!selectedLanguage) {
+      alert('Please select a language');
+      return;
+    }
+
+    const userId = '{{userId}}';
+    const formData = new FormData();
+    formData.append('selectedLanguage', selectedLanguage);
+
+    try {
+      const response = await fetch(`http://localhost:8000/update/${userId}`, {
+        method: 'PUT',
+        body: formData,
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Language status updated successfully!');
+        location.reload(); // Reload to show updated language lists
+      } else {
+        alert(data.message || 'Failed to update language status');
+      }
+    } catch (error) {
+      console.error("Error updating language status:", error);
+      alert('An error occurred while updating language status');
+    }
+  }
 
   function handleLogout() {
     fetch('http://localhost:8000/logout', {
@@ -110,5 +213,61 @@
     .catch(error => {
         alert('Error logging out');
     });
+  }
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const dropdown = document.getElementById('usersDropdown');
+
+  // Fetch all users
+  try {
+    const response = await fetch('http://localhost:8000/users', {
+      method: 'GET',
+      credentials: 'include',
+    });
+    const users = await response.json();
+
+    // Populate the dropdown
+    users.forEach((user) => {
+      const option = document.createElement('option');
+      option.value = user._id;
+      option.textContent = user.name;
+      dropdown.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    alert('Could not fetch users.');
+  }
+});
+
+async function addToContact() {
+  const selectedUserId = document.getElementById('usersDropdown').value;
+  const loggedInUserId = '{{userId}}'; // Replace with the logged-in user's ID
+
+  if (!selectedUserId) {
+    alert('Please select a user to add to contacts.');
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:8000/users/${loggedInUserId}/add-contact`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ contactId: selectedUserId }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert('User added to contacts successfully!');
+    } else {
+      alert(result.message || 'Failed to add contact.');
+    }
+  } catch (error) {
+    console.error('Error adding contact:', error);
+    alert('An error occurred while adding the contact.');
+  }
 }
+
+  
 </script>

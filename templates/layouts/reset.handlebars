@@ -1,0 +1,52 @@
+{{!< main}}
+<div class="min-vh-100 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #f0f4f8, #d9e8ff);">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card p-4" style="border-radius: 12px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);">
+          <div class="card-body">
+            <h1 class="text-center text-success mb-4">Reset Your Password</h1>
+            <p class="text-muted text-center">Enter your email to receive a verification link</p>
+            <form id="resetPasswordForm">
+              <div class="input-group mb-3">
+                <span class="input-group-text bg-light text-success">
+                  <svg class="icon" style="width: 18px; height: 18px;">
+                    <use xlink:href="/static/vendors/@coreui/icons/svg/free.svg#cil-user"></use>
+                  </svg>
+                </span>
+                <input id="resetEmail" class="form-control" type="email" placeholder="Enter your email" required>
+              </div>
+              <!-- Reset Button -->
+              <div class="d-grid gap-2">
+                <button class="btn btn-success text-white" type="submit" style="border-radius: 8px;">Send Reset Link</button>
+              </div>
+            </form>
+            <div id="resetFeedback" class="mt-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('resetPasswordForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('resetEmail').value;
+    const feedback = document.getElementById('resetFeedback');
+
+    // Simulate email sending process by logging in console
+    console.log(`Password reset request received for email: ${email}`);
+    
+    // Simulate a successful email verification process
+    if (email) {
+        feedback.innerHTML = '<div class="alert alert-success">A reset link has been sent to your email.</div>';
+        console.log(`Reset link sent to: ${email}`);
+        setTimeout(() => {
+            window.location.href = '/login'; // Redirect back to login after 3 seconds
+        }, 3000);
+    } else {
+        feedback.innerHTML = '<div class="alert alert-danger">Failed to send reset link. Please check the email and try again.</div>';
+    }
+});
+</script>

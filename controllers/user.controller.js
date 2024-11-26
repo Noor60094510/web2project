@@ -1,8 +1,9 @@
 const crypto = require("crypto");
-const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-dotenv.config();
+const User = require("../models/user");
+
+dotenv.config(); // Load environment variables
 
 // Signup user
 const signup = async (req, res) => {
@@ -21,7 +22,7 @@ const signup = async (req, res) => {
     }
 
     // Hash the password
-    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+    const hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
 
     // Default languages
     const defaultFluentLanguages = ["English"];
@@ -61,21 +62,20 @@ const signup = async (req, res) => {
   }
 };
 
-
+// Login user
 const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required" });
+      return res.status(400).json({ message: "Email and password are required" });
     }
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).send("Invalid email or password");
     }
 
-    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+    const hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
     if (hashedPassword !== user.password) {
       return res.status(401).send("Invalid email or password");
     }
@@ -92,21 +92,33 @@ const login = async (req, res) => {
 
     return res.redirect("/profile");
   } catch (error) {
-    console.error("Error Occured:", error);
-    res.status(500).json({ message: "Internal server Error", error });
+    console.error("Error occurred during login:", error);
+    res.status(500).json({ message: "Internal server error", error });
   }
 };
 
+// Logout user
+const logout = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    res.redirect("/");
+  } catch (error) {
+    console.error("Error during logout:", error);
+  }
+};
+
+// Update user
 const updateUser = async (req, res) => {
   try {
     const { name, email, selectedLanguage } = req.body;
     const userId = req.params.userId;
 
-    // Input validation
+    // Validate email format
     if (email && !isValidEmail(email)) {
       return res.status(400).json({ message: "Invalid email format" });
     }
-    // Check if email already exists for another user
+
+    // Check if email is already in use
     if (email) {
       const existingUser = await User.findOne({ email, _id: { $ne: userId } });
       if (existingUser) {
@@ -114,130 +126,85 @@ const updateUser = async (req, res) => {
       }
     }
 
-    // Fetch the user
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Prepare the fields to be updated
+    // Handle language updates
+    if (selectedLanguage) {
+      const validLanguages = [...user.languagesLearning, ...user.languagesFluentIn];
+      if (!validLanguages.includes(selectedLanguage)) {
+        return res.status(400).json({ message: "Invalid language selection" });
+      }
+
+      if (user.languagesLearning.includes(selectedLanguage)) {
+        user.languagesLearning = user.languagesLearning.filter(lang => lang !== selectedLanguage);
+        if (!user.languagesFluentIn.includes(selectedLanguage)) {
+          user.languagesFluentIn.push(selectedLanguage);
+        }
+      } else {
+        return res.status(400).json({
+          message: "Selected language is not in your learning list",
+        });
+      }
+    }
+
+    // Update user fields
     const updateData = {
       ...(name && { name }),
       ...(email && { email }),
       ...(req.file && { profile: `/images/${req.file.filename}` }),
     };
 
-    // Handle language movement
-    if (selectedLanguage) {
-      // Validate if the language exists in our system
-      const validLanguages = [...user.languagesLearning, ...user.languagesFluentIn];
-      if (!validLanguages.includes(selectedLanguage)) {
-        return res.status(400).json({ 
-          message: "Invalid language selection" 
-        });
-      }
-
-      // Move language from learning to fluent
-      if (user.languagesLearning.includes(selectedLanguage)) {
-        // Remove from learning languages
-        user.languagesLearning = user.languagesLearning.filter(
-          lang => lang !== selectedLanguage
-        );
-
-        // Add to fluent languages if not already present
-        if (!user.languagesFluentIn.includes(selectedLanguage)) {
-          user.languagesFluentIn.push(selectedLanguage);
-        }
-
-        // Sort languages alphabetically for better UI presentation
-        user.languagesFluentIn.sort();
-        user.languagesLearning.sort();
-      } else {
-        return res.status(400).json({
-          message: "Selected language is not in your learning list",
-          currentLearning: user.languagesLearning
-        });
-      }
-    }
-
-    // Apply other updates
     Object.assign(user, updateData);
+    await user.save();
 
-    // Save the updated user
-    const updatedUser = await user.save();
-
-    // Return updated user data
     res.status(200).json({
       message: "Profile updated successfully!",
-      user: {
-        id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        languagesFluentIn: updatedUser.languagesFluentIn,
-        languagesLearning: updatedUser.languagesLearning,
-        profile: updatedUser.profile,
-      },
-      updates: {
-        languagesMoved: selectedLanguage ? [selectedLanguage] : [],
-        fieldsUpdated: Object.keys(updateData)
-      }
+      user,
     });
   } catch (error) {
-    console.error("Error updating profile:", error);
-    res.status(500).json({ 
-      message: "Failed to update profile",
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "Failed to update profile", error });
   }
 };
 
-// Helper function for email validation
+// Helper function to validate email format
 const isValidEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
-
-
-
-const logout = async (req, res) => {
-  try {
-    res.clearCookie("token");
-    res.redirect("/");
-  } catch (error) {
-    console.log(error);
-    console.log("error");
-  }
-};
-
-// get all user 
+// Get all users
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
     const usersProfile = users.map(user => ({
       ...user._doc,
-      profile: user.profile ? `/images/${user.profile}` : '/images/default-avatar.png',
+      profile: user.profile ? `/images/${user.profile}` : "/images/default-avatar.png",
     }));
 
     res.status(200).json(usersProfile);
   } catch (error) {
-    console.error('Error fetching users:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching users:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-// block user 
+// Block user
 const blockUser = async (req, res) => {
   try {
-    const { userId } = req.params; // Logged-in user's ID
+    const { userId } = req.params;
     const { blockedUserId } = req.body;
-    console.log("userid", userId);
+
     if (userId === blockedUserId) {
       return res.status(400).json({ message: "You cannot block yourself." });
     }
+
     const user = await User.findById(userId);
-    console.log("user", user);
     const blockedUser = await User.findById(blockedUserId);
+
     if (!user || !blockedUser) {
       return res.status(404).json({ message: "User not found." });
     }
@@ -245,85 +212,125 @@ const blockUser = async (req, res) => {
     if (user.blockedUsers.includes(blockedUserId)) {
       return res.status(400).json({ message: "User is already blocked." });
     }
-    // Add the blocked user
+
     user.blockedUsers.push(blockedUserId);
     await user.save();
-    res.status(200).json({ message: "User blocked successfully.", blockedUsers: user.blockedUsers });
+
+    res.status(200).json({ message: "User blocked successfully." });
   } catch (error) {
     console.error("Error blocking user:", error);
-    res.status(500).json({ message: "Error blocking user", error });
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 
-
-
-
-const addToContacts= async (req, res) => {
+// Add to contacts
+const addToContacts = async (req, res) => {
   try {
-    const { contactId } = req.body; 
-    const userId = req.params.id; 
+    const { id } = req.params;
+    const { contactId } = req.body;
 
-    if(contactId===userId){
-      return res.status(400).json({message:"You cannot add as contact yourself"});
-    }
-    if (!contactId) {
-      return res.status(400).json({ message: 'Contact ID is required.' });
+    if (id === contactId) {
+      return res.status(400).json({ message: "You cannot add yourself as a contact." });
     }
 
-    
-    const user = await User.findById(userId);
+    const user = await User.findById(id);
     if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
+      return res.status(404).json({ message: "User not found." });
     }
 
- 
     if (user.contacts.includes(contactId)) {
-      return res.status(400).json({ message: 'User is already in contacts.' });
+      return res.status(400).json({ message: "User is already in contacts." });
     }
 
-   
     user.contacts.push(contactId);
     await user.save();
-    res.status(200).json({ message: 'Contact added successfully.', contacts: user.contacts });
+
+    res.status(200).json({ message: "Contact added successfully." });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
+    console.error("Error adding to contacts:", error);
+    res.status(500).json({ message: "Internal server error." });
   }
-}
+};
 
-
-
+// Remove contact
 const removeContact = async (req, res) => {
   try {
-
-    const {loggedInUserId}=req.params;
-    const {  contactId } = req.body; // Assuming these are sent in the request body
-
-    if (!loggedInUserId || !contactId) {
-      return res.status(400).send('Bad Request: Both loggedInUserId and contactId are required.');
-    }
+    const { loggedInUserId } = req.params;
+    const { contactId } = req.body;
 
     const user = await User.findById(loggedInUserId);
     if (!user) {
-      return res.status(404).send('User not found.');
+      return res.status(404).json({ message: "User not found." });
     }
 
-    // Check if the contact exists in the user's contacts
-    const contactIndex = user.contacts.indexOf(contactId);
-    if (contactIndex === -1) {
-      return res.status(400).send('Contact not found in user\'s contacts.');
-    }
-
-    // Remove the contact
-    user.contacts.splice(contactIndex, 1);
+    user.contacts = user.contacts.filter(id => id.toString() !== contactId);
     await user.save();
 
-    res.status(200).send('Contact removed successfully.');
+    res.status(200).json({ message: "Contact removed successfully." });
   } catch (error) {
-    console.error('Error removing contact:', error);
-    res.status(500).send('Internal Server Error');
+    console.error("Error removing contact:", error);
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 
+// Reset Password
+const resetPasswordPage = (req, res) => {
+  res.render("reset-password", { title: "Reset Password" });
+};
 
-module.exports = { signup, login, logout, updateUser, getAllUsers, blockUser,addToContacts ,removeContact};
+const resetPassword = async (req, res) => {
+  try {
+    const { email, newPassword, confirmPassword } = req.body;
+
+    // Validate passwords
+    if (newPassword !== confirmPassword) {
+      return res.status(400).render("reset-password", { 
+        error: "Passwords do not match.", 
+        title: "Reset Password" 
+      });
+    }
+
+    // Check if the user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).render("reset-password", { 
+        error: "User not found.", 
+        title: "Reset Password" 
+      });
+    }
+
+    // Hash and update the password
+    const hashedPassword = crypto.createHash("sha256").update(newPassword).digest("hex");
+    user.password = hashedPassword;
+    await user.save();
+
+    // Log to console
+    console.log(`Password reset successful for email: ${email}`);
+
+    // Redirect to login with success message
+    res.render("login", { 
+      success: `Password for ${email} has been reset successfully. Please log in.`,
+      email,
+      title: "Login" 
+    });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    res.status(500).render("reset-password", { 
+      error: "Internal server error. Please try again later.", 
+      title: "Reset Password" 
+    });
+  }
+};
+
+module.exports = {
+  signup,
+  login,
+  logout,
+  updateUser,
+  getAllUsers,
+  blockUser,
+  addToContacts,
+  removeContact,
+  resetPasswordPage,
+  resetPassword,
+};

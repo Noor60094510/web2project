@@ -16,18 +16,21 @@ async function connectDatabase() {
   }
 }
 
+// Fetch all users
 async function getAllusers() {
   await connectDatabase();
   let users = await usersCollection.find({}).toArray();
   return users;
 }
 
+// Fetch a user by email
 async function getUser(email) {
   await connectDatabase();
   let user = await usersCollection.findOne({ email: email });
   return user;
 }
 
+// Create a new user
 async function makeUser(userData) {
   await connectDatabase();
 
@@ -36,6 +39,7 @@ async function makeUser(userData) {
   return createdUser;
 }
 
+// Update user details by email
 async function updateUser(userData) {
   await connectDatabase();
 
@@ -58,19 +62,41 @@ async function updateUser(userData) {
   return updatedUser;
 }
 
+// Update user password by email (for reset password functionality)
+async function updateUserPassword(email, hashedPassword) {
+  await connectDatabase();
+
+  // Ensure the email exists
+  const user = await usersCollection.findOne({ email: email });
+  if (!user) {
+    throw new Error("User with the given email does not exist.");
+  }
+
+  // Update the password
+  await usersCollection.updateOne(
+    { email: email },
+    { $set: { password: hashedPassword } }
+  );
+
+  // Return the updated user for confirmation (optional)
+  return await usersCollection.findOne({ email: email });
+}
+
+// Fetch all sessions
 async function getAllSessions() {
   await connectDatabase();
   let sessions = await sessionsCollection.find({}).toArray();
   return sessions;
 }
 
+// Fetch a session by SessionKey
 async function getSession(SessionKey) {
   await connectDatabase();
   let session = await sessionsCollection.findOne({ SessionKey: SessionKey });
-
   return session;
 }
 
+// Save a session
 async function saveSession(uuid, expiry, data) {
   await connectDatabase();
 
@@ -81,6 +107,7 @@ async function saveSession(uuid, expiry, data) {
   });
 }
 
+// Delete a session
 async function deleteSession(key) {
   console.log(key);
 
@@ -92,6 +119,7 @@ module.exports = {
   getUser,
   makeUser,
   updateUser,
+  updateUserPassword, // Added for reset password functionality
   getAllSessions,
   getSession,
   saveSession,
